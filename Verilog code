@@ -1,1 +1,47 @@
 
+module vending_machine (
+    input wire clk,          // Clock signal
+    input wire reset,        // Active-high reset
+    input wire coin,         // Input: 1 for valid coin, 0 for invalid
+    output reg dispense      // Output: 1 to dispense, 0 for none
+);
+ // State encoding
+    parameter S0 = 1'b0;    // Waiting for first coin
+    parameter S1 = 1'b1;    // One valid coin received
+    // State register
+    reg state, next_state;
+    // Synchronous state update
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            state <= S0;    // Reset to initial state
+        else
+            state <= next_state; // Move to next state
+    end
+    // Next state and output logic (Mealy machine)
+    always @(state, coin) begin
+        case (state)
+            S0: begin
+                if (coin) begin
+                    next_state = S1;
+                    dispense = 1'b0; // No dispense
+                end else begin
+                    next_state = S0;
+                    dispense = 1'b0; // No dispense
+                end
+            end
+            S1: begin
+                if (coin) begin
+                    next_state = S0;
+                    dispense = 1'b1; // Dispense product
+                end else begin
+                    next_state = S0;
+                    dispense = 1'b0; // No dispense
+                end
+            end
+            default: begin
+                next_state = S0;
+                dispense = 1'b0;
+            end
+        endcase
+    end
+endmodule
