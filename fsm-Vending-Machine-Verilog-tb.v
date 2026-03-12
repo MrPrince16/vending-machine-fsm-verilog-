@@ -17,9 +17,9 @@ wire dispense;
     // Test stimulus
     initial begin
         // Initialize signals
-        clk = 0;
+        clk = 1;
         reset = 1;
-        coin = 0;
+        coin = 1;
         // Dump variables for waveform
         $dumpfile("vending_machine.vcd");
         $dumpvars(0, vending_machine_tb);
